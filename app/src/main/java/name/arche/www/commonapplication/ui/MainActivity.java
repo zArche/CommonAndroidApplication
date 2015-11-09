@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,7 +117,9 @@ public class MainActivity extends BaseActivity {
                     Toast.makeText(mContext,"navigation_about",Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.menu_settings:
-                    Toast.makeText(mContext,"navigation_settings",Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(mContext,"navigation_settings",Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(mContext,SettingActivity.class));
+                    overridePendingTransition(R.anim.push_left_acc, R.anim.push_remain);
                     break;
             }
             menuItem.setChecked(true);

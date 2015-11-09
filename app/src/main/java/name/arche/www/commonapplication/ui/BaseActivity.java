@@ -65,7 +65,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      * 只要调用该方法注册，便会在Activity销毁时注销EventBus,而不需要每次添加，或者忘记
      * TODO EventBus更多更强的功能提取
      * **/
-    private void registerEventBus(){
+    protected void registerEventBus(){
         if (mEventBus != null){
             mEventBus.register(this);
             eventBusRegistered = true;
