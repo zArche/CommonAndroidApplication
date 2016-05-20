@@ -1,11 +1,12 @@
 安卓app开发模板<br>
-	Update:
-		Date:2016/5/20
-		Content:
-			*  网络请求放弃使用Volley，采用retrofit+okhttp+rxandroid模式
-			*  加入了懒人开发神器butterkinfe
-			*  数据库换成了activeandroid
-			*  当然，有最牛的rxandroid和lambda
+	
+	Update:<br>
+	  Date:2016/5/20<br>
+	  Content:<br>
+	    *  网络请求放弃使用Volley，采用retrofit+okhttp+rxandroid模式<br>
+	    *  加入了懒人开发神器butterkinfe<br>
+	    *  数据库换成了activeandroid<br>
+	    *  当然，有最牛的rxandroid和lambda<br>
 
 	1.简介<br>
 	　封装一个通用型的app模板<br>
