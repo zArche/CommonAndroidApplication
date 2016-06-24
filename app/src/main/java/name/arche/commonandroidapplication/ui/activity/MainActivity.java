@@ -7,10 +7,8 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import name.arche.commonandroidapplication.R;
 import name.arche.commonandroidapplication.api.ApiClient;
 import rx.Observable;
@@ -20,7 +18,7 @@ import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
 
-    @Bind(R.id.hello)
+    @BindView(R.id.hello)
     TextView hello;
 
 
@@ -89,37 +87,37 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-        List<Bitmap> views = new ArrayList<>();
-        File dir = new File("/sdcard");
-        File[] folders = dir.listFiles();
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                for (File folder : folders) {
-                    File[] files = folder.listFiles();
-                    for (File file : files) {
-                        if (file.getName().endsWith(".png")) {
-                            final Bitmap bitmap = getBitmapFromFile(file);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    views.add(bitmap);
-                                }
-                            });
-                        }
-                    }
-                }
-            }}.start();
-
-        Observable.from(folders)
-                .subscribeOn(Schedulers.io())
-                .filter(folder -> folder.isDirectory())
-                .flatMap(folder -> Observable.from(folder.listFiles()))
-                .filter(file -> file.getName().endsWith("png"))
-                .map(file -> getBitmapFromFile(file))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(bitmap -> views.add(bitmap));
+//        List<Bitmap> views = new ArrayList<>();
+//        File dir = new File("/sdcard");
+//        File[] folders = dir.listFiles();
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                super.run();
+//                for (File folder : folders) {
+//                    File[] files = folder.listFiles();
+//                    for (File file : files) {
+//                        if (file.getName().endsWith(".png")) {
+//                            final Bitmap bitmap = getBitmapFromFile(file);
+//                            runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    views.add(bitmap);
+//                                }
+//                            });
+//                        }
+//                    }
+//                }
+//            }}.start();
+//
+//        Observable.from(folders)
+//                .subscribeOn(Schedulers.io())
+//                .filter(folder -> folder.isDirectory())
+//                .flatMap(folder -> Observable.from(folder.listFiles()))
+//                .filter(file -> file.getName().endsWith("png"))
+//                .map(file -> getBitmapFromFile(file))
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(bitmap -> views.add(bitmap));
     }
 
     private Bitmap getBitmapFromFile(File file){

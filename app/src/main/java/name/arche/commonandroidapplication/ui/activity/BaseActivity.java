@@ -8,6 +8,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import name.arche.commonandroidapplication.utils.ActivityUtils;
 
 /**
@@ -21,7 +22,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     //==========Activity通用成员变量==========
     protected Context mContext;
+    protected Unbinder unbinder;
     //============================
+
 
     @Override
     @Subscribe
@@ -30,7 +33,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView();
         mContext = this;
         EventBus.getDefault().register(this);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         ActivityUtils.addActivity(this);
 
@@ -61,7 +64,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         ActivityUtils.finishActivity(this);
         super.onDestroy();
     }
