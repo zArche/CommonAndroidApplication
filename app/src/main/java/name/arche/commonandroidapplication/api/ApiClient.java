@@ -1,57 +1,59 @@
 package name.arche.commonandroidapplication.api;
 
-import java.util.concurrent.TimeUnit;
+import name.arche.retrofitutil.api.RetrofitClient;
 
-import okhttp3.ConnectionPool;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
+import java.util.List;
+
+import name.arche.commonandroidapplication.models.Repo;
+import retrofit2.Call;
+import rx.Observable;
+
 
 /**
- * Created by arche on 2016/4/1.
+ * Created by Arche on 2016/11/1.
  */
+
 public class ApiClient {
 
-    private static ApiService apiService;
-    private static String mToken;
+    private static ApiClient mApiClient;
+    private static RetrofitClient mRetrofitClient;
+    private static ApiServer mApiServer;
 
     static {
-        final OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .retryOnConnectionFailure(false)
-                .connectionPool(new ConnectionPool(10, 300, TimeUnit.SECONDS));
-//                .addInterceptor(new Interceptor() {
-//                    @Override
-//                    public Response intercept(Chain chain) throws IOException {
-//                        Response response = chain.proceed(chain.request());
-//                        String rp = response.body().string();
-//                        Log.i("url",response.request().url().toString());
-//                        Log.i("response",rp);
-//                        return response;
-//                    }
-//                });
-        final OkHttpClient okHttpClient = builder.build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URLs.API_URL)
-                .client(okHttpClient)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        apiService = retrofit.create(ApiService.class);
+        try {
+            mRetrofitClient = new RetrofitClient.Builder()
+                    .baseUrl(URLs.API_URL)
+                    .setApiServiceClazz(ApiServer.class)
+                    .builder();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mApiServer = (ApiServer) mRetrofitClient.getApiService();
+        mApiClient = new ApiClient();
     }
 
-    public static ApiService getApiService() {
-        return apiService;
+    public static ApiClient getInstance(){
+        return mApiClient;
     }
 
-    public static String getToken() {
-        return mToken;
+    public void login(RetrofitClient.CallBack callBack) { //以call back方式
+        mRetrofitClient.callback(callBack).handleResponse(mApiServer.login());
     }
 
-    public static void setToken(String token) {
-        mToken = token;
+    public Observable test(){ //以rxjava方式
+        return  mApiServer.test();
     }
+
+    public Call test1(){ //以同步、异步方式
+        return mApiServer.test1();
+    }
+
+    public Observable<List<Repo>> listRepos(String org){
+        return mApiServer.listRepos(org);
+    }
+
+    public void listReposByCallback(String org, RetrofitClient.CallBack callBack){
+        mRetrofitClient.callback(callBack).handleResponse(mApiServer.listRepos(org));
+    }
+
 }

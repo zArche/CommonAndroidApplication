@@ -1,4 +1,4 @@
-package name.arche.commonandroidapplication.models;
+package name.arche.retrofitutil.api;
 
 import java.util.ArrayList;
 
@@ -8,11 +8,17 @@ import java.util.ArrayList;
 public class Result<T> {
 
     private int code;
-    private String reason;
+    private String message;
     private T data;
 
-    public boolean isSuccess(){
-        if (this.code == 0){
+    public Result(int code, String message, T data) {
+        this.code = code;
+        this.message = message;
+        this.data = data;
+    }
+
+    public boolean isSuccess() {
+        if (this.code == 0) {
             return true;
         }
         return false;
@@ -58,12 +64,12 @@ public class Result<T> {
         this.code = code;
     }
 
-    public String getReason() {
-        return reason;
+    public String getMessage() {
+        return message;
     }
 
-    public void setReason(String reason) {
-        this.reason = reason;
+    public void setMessage(String reason) {
+        this.message = reason;
     }
 
     public T getData() {
