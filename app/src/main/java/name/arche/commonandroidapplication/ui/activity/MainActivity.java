@@ -78,7 +78,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onProgressUpdate(long progress, long total, boolean done) {
-                Log.d("zzf","progress:" + progress + ",total:" + total + ",current percent:" + (progress/total));
+                Log.d("zzf","progress:" + progress + ",total:" + total + ",current percent:" + (progress * 100 / total ));
             }
         });
     }

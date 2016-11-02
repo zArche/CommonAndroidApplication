@@ -249,7 +249,7 @@ public class RetrofitClient<T> {
                         .connectionPool(new ConnectionPool(mMaxIdleConnections, mKeepAliveDuration, TimeUnit.SECONDS))
                         .addInterceptor(new ParamsSignInterceptor()) //参数签名
                         .addInterceptor(new LogInterceptor(mDebug)) //日志输出
-                        .addInterceptor(new ProgressListenerInterceptor(new ProgressListener() {
+                        .addInterceptor(new ProgressListenerInterceptor(new ProgressListener() { //进度回调
                             @Override
                             public void onProgress(long progress, long total, boolean done) {
                                 if (mRetrofitClient != null && mRetrofitClient.mCallBack != null){
