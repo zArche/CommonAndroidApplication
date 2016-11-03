@@ -27,23 +27,33 @@ public class RetrofitClient<T> {
     private static final String TAG = "RetrofitClient";
     private T mApiService;
 
+    private OkHttpClient mOkHttpClient;
+
+    private Retrofit mRetrofit;
+
     public T getApiService() {
         return mApiService;
     }
 
-    private CallBack mCallBack;
 
     private boolean mDebug;
 
-    private RetrofitClient(Retrofit retrofit, Class clazz, boolean debug) {
+    private RetrofitClient(Retrofit retrofit,OkHttpClient okHttpClient, Class clazz, boolean debug) {
+        mRetrofit = retrofit;
+        mOkHttpClient = okHttpClient;
         mApiService = (T) retrofit.create(clazz);
         mDebug = debug;
+
     }
 
 
+    public Builder newBuilder(){
+        return new Builder(mOkHttpClient,mRetrofit);
+    }
+
     // 每个网络请求的流程都是这个样子的，这块代码是重复的
-    public <T> void handleResponse(Observable<Result<T>> observable) {
-        observable.subscribeOn(Schedulers.io()) // 执行在io线程，效率会高点
+    public <T> void handleResponse(Observable<Result<T>> observable,final CallBack callBack) {
+        observable.subscribeOn(Schedulers.io()) // 执行在io线程
                 .onErrorResumeNext(new Func1<Throwable, Observable<? extends Result<T>>>() {
                     @Override
                     public Observable<? extends Result<T>> call(Throwable throwable) {
@@ -53,8 +63,8 @@ public class RetrofitClient<T> {
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        if (mCallBack != null)
-                            mCallBack.onStart();
+                        if (callBack != null)
+                            callBack.onStart();
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread()) //在线程中进行准备工作，即上面的onStart
@@ -64,8 +74,8 @@ public class RetrofitClient<T> {
                                public void call(Result<T> result) {
                                    if (mDebug)
                                        Log.d(TAG, "response: code is " + result.getCode() + ",message is " + result.getMessage());
-                                   if (mCallBack != null) {
-                                       mCallBack.onResponse(result);
+                                   if (callBack != null) {
+                                       callBack.onResponse(result);
                                    }
                                }
                            }
@@ -74,20 +84,12 @@ public class RetrofitClient<T> {
                 );
     }
 
-
-    public <T> RetrofitClient callback(CallBack callBack) {
-        this.mCallBack = callBack;
-        return this;
-    }
-
     /**
      * 网络请求结果回调
      */
-    public static abstract class CallBack {
-        public abstract void onStart();
-        public abstract void onResponse(Result result);
-        public void onProgressUpdate(long progress, long total, boolean done){}
-
+    public interface CallBack {
+        void onStart();
+        void onResponse(Result result);
     }
 
     public final static class Builder {
@@ -184,7 +186,7 @@ public class RetrofitClient<T> {
         /**
          * 设置apiService接口类
          **/
-        public Builder setApiServiceClazz(Class clazz) {
+        public Builder setApiServerClazz(Class clazz) {
             mClazz = clazz;
             return this;
         }
@@ -235,7 +237,7 @@ public class RetrofitClient<T> {
         /**
          * build api client
          **/
-        public RetrofitClient builder() throws Exception {
+        public RetrofitClient build() throws Exception {
             if (mClazz == null || mBaseUrl == null) {
                 throw new Exception("The class of api service or the base url is null !");
             }
@@ -248,15 +250,15 @@ public class RetrofitClient<T> {
                         .retryOnConnectionFailure(mRetryOnConnectionFailure)
                         .connectionPool(new ConnectionPool(mMaxIdleConnections, mKeepAliveDuration, TimeUnit.SECONDS))
                         .addInterceptor(new ParamsSignInterceptor()) //参数签名
-                        .addInterceptor(new LogInterceptor(mDebug)) //日志输出
-                        .addInterceptor(new ProgressListenerInterceptor(new ProgressListener() { //进度回调
-                            @Override
-                            public void onProgress(long progress, long total, boolean done) {
-                                if (mRetrofitClient != null && mRetrofitClient.mCallBack != null){
-                                    mRetrofitClient.mCallBack.onProgressUpdate(progress,total,done);
-                                }
-                            }
-                        }));
+                        .addInterceptor(new LogInterceptor(mDebug)); //日志输出
+//                        .addInterceptor(new ProgressListenerInterceptor(new ProgressListener() { //进度回调
+//                            @Override
+//                            public void onProgress(long progress, long total, boolean done) {
+//                                if (mRetrofitClient != null && mRetrofitClient.mProgressListner != null){
+//                                    mRetrofitClient.mProgressListner.onProgress(progress,total,done);
+//                                }
+//                            }
+//                        }));
 
                 mOkHttpClient = okHttpClientBuilder.build();
             }
@@ -269,7 +271,7 @@ public class RetrofitClient<T> {
                         .addConverterFactory(mConverterFactory)
                         .build();
             }
-            mRetrofitClient = new RetrofitClient(mRetrofit, mClazz, mDebug);
+            mRetrofitClient = new RetrofitClient(mRetrofit, mOkHttpClient,mClazz, mDebug);
             return mRetrofitClient;
         }
 
