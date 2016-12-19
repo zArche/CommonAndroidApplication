@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CommonAndroidApplication.iml" filepath="$PROJECT_DIR$/CommonAndroidApplication.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/retrofitUtil/retrofitUtil.iml" filepath="$PROJECT_DIR$/retrofitUtil/retrofitUtil.iml" />
+      <module fileurl="file://$PROJECT_DIR$/retrifitclient/retrifitclient.iml" filepath="$PROJECT_DIR$/retrifitclient/retrifitclient.iml" />
     </modules>
   </component>
 </project>

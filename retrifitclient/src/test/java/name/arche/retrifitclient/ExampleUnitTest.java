@@ -1,4 +1,4 @@
-package name.arche.commonandroidapplication;
+package name.arche.retrifitclient;
 
 import org.junit.Test;
 

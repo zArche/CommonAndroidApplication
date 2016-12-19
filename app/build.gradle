@@ -1,3 +1,5 @@
+apply plugin: 'com.android.application'
+
 buildscript {
     repositories {
         mavenCentral()
@@ -13,24 +15,37 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
-
 android {
-    compileSdkVersion 24
+    compileSdkVersion 25
     buildToolsVersion "25.0.0"
-
     defaultConfig {
         applicationId "name.arche.commonandroidapplication"
         minSdkVersion 15
-        targetSdkVersion 23
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    /**
+     *签名信息-示例
+     * **/
+    signingConfigs {
+        release {
+            keyAlias 'arche'
+            keyPassword 'arche'
+            storeFile file('/home/arche/android/arche.jks')
+            storePassword 'arche'
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -39,22 +54,39 @@ android {
         exclude 'LICENSE'
         exclude 'LICENSE.txt'
     }
+
+    /**
+     *多渠道打包设置
+     * **/
+    productFlavors{
+        product_simple1{
+            applicationId "name.arche.commonandroidapplication_simple1"
+            versionName "1"
+        }
+        product_simple2{
+            applicationId "name.arche.commonandroidapplication_simple2"
+            versionName "2"
+        }
+    }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.0.0'
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.2.1'
+
+    //第三方库
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.jakewharton:butterknife:8.1.0'
     apt 'com.jakewharton:butterknife-compiler:8.1.0'
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
-    compile project(':retrofitUtil')
+    compile project(path: ':retrifitclient')
 }
 
 repositories {
     mavenCentral()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
-
-
