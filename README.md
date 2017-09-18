@@ -14,7 +14,7 @@
 　　　　5. 抽象类：BaseActivity
 ***  
 
-### 使用姿势：clone到本地，修改APP名、修改包名、修改RetrofitClient类，增删功能、
+### 使用姿势：clone到本地，修改APP名、修改包名、修改RetrofitClient类、增删功能
 　　　　
 
 	    
