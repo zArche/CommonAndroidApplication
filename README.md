@@ -1,4 +1,4 @@
-#安卓app开发模板  
+# 安卓app开发模板  
 + 简介  
 　　封装一个通用型的app模板：  
 　　　　1. 以后续app开发时可以快速进入项目细节开发  
@@ -14,7 +14,7 @@
 　　　　5. 抽象类：BaseActivity
 ***  
 
-#使用姿势：clone到本地，修改APP名、修改包名、修改RetrofitClient类，增删功能、
+### 使用姿势：clone到本地，修改APP名、修改包名、修改RetrofitClient类，增删功能、
 　　　　
 
 	    
